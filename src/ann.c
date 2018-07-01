@@ -13,7 +13,7 @@ typedef struct ann {
 
 ann_t *ann_create(int num_layers, int *layer_outputs){
     ann_t *ann = malloc(sizeof(ann_t));
-    layer_t **layers = calloc(num_layers,sizeof(layer_t*));
+    layer_t *layers[num_layers];
     layers[0] = layer_create();
     layer_init(layers[0], layer_outputs[0], NULL);
     for (int i = 1; i < num_layers; i++){
@@ -22,12 +22,19 @@ ann_t *ann_create(int num_layers, int *layer_outputs){
     }
     ann->input_layer = layers[0];
     ann->output_layer = layers[num_layers - 1];
+    
     return ann;
 }
 
-void ann_free(ann_t *ann){
-    layer_free(ann->input_layer);
-    layer_free(ann->output_layer);
+void ann_free(ann_t *ann){ 
+    layer_t *current = ann->input_layer;
+    layer_t *next;
+    while(current){
+        next = current->next;
+        layer_free(current);
+        current = next;
+    }
+    free(ann);
 }
 
 void ann_predict(ann_t const *ann, double const *inputs){
@@ -51,6 +58,10 @@ void ann_train(ann_t *ann, double *inputs, double *targets, double l_rate){
     current = current->prev;
     while(current->prev){
         layer_compute_deltas(current);
+        current = current->prev;
+    }
+    current = ann->output_layer;
+    while(current->prev){
         layer_update(current, l_rate);
         current = current->prev;
     }
@@ -76,9 +87,9 @@ int main(void){
     }
     printf("\n");
 
-    double targets[] = {0};
-    for (int i = 0; i < 200000; i++){
-        ann_train(ann, inputs, targets, 0.1);
+    double targets[] = {1};
+    for (int i = 0; i < 1; i++){
+        ann_train(ann, inputs, targets, 1);
     }
     printf("\nTrained\n");
 

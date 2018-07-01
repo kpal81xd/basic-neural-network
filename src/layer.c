@@ -37,6 +37,8 @@ layer_t *layer_create() {
 int layer_init(layer_t *layer, int num_outputs, layer_t *prev){
     layer->num_inputs = 0;
     layer->num_outputs = num_outputs;
+    layer->prev = NULL;
+    layer->next = NULL;
 
     if (prev){
         layer->prev = prev;
@@ -51,14 +53,15 @@ int layer_init(layer_t *layer, int num_outputs, layer_t *prev){
 
     layer->weights = calloc(layer->num_inputs, sizeof(double*));
     for (int i = 0; i < layer->num_inputs;i++){
-        layer->weights[i] = calloc(layer->num_outputs, sizeof(double*));
+        layer->weights[i] = calloc(layer->num_outputs, sizeof(double));
     }
 
     for (int y = 0; y < layer->num_inputs; y++){
         for (int x = 0; x < layer->num_outputs; x++){
-            layer->weights[y][x] = get_random();
-        }       
-    }
+            layer->weights[y][x] = 0;//get_random();
+        }    
+        
+    } 
 
     return 1;
 }
@@ -70,6 +73,7 @@ void layer_free(layer_t *layer){
     for (int i = 0; i < layer->num_inputs;i++){
         free(layer->weights[i]);
     }
+    free(layer->weights);
     free(layer);
 }
 
@@ -97,8 +101,11 @@ void layer_update(layer_t const *layer, double l_rate){
     for (int y = 0; y < layer->num_inputs; y++){
         for (int x = 0; x < layer->num_outputs; x++){
             layer->weights[y][x] += l_rate * layer->prev->outputs[y] * layer->deltas[x];
-        }       
+            printf("W: %lf ",layer->weights[y][x]);
+        }
+        printf("\n");      
     }
+    printf("\n");
 
     for (int i = 0; i < layer->num_outputs; i++){
         layer->biases[i] += l_rate * layer->deltas[i];
