@@ -34,17 +34,17 @@ int layer_init(layer_t *layer, int num_outputs, layer_t *prev){
     }
 
     // Allocate memory to arrays and matrices
-    layer->outputs = calloc(layer->num_outputs, sizeof(double));
+    layer->outputs = (double *) calloc(layer->num_outputs, sizeof(double));
     if (!layer->outputs) return 1;
-    layer->biases = calloc(layer->num_outputs, sizeof(double));
+    layer->biases = (double *) calloc(layer->num_outputs, sizeof(double));
     if (!layer->biases) return 1;
-    layer->deltas = calloc(layer->num_outputs, sizeof(double));
+    layer->deltas = (double *) calloc(layer->num_outputs, sizeof(double));
     if (!layer->deltas) return 1;
 
-    layer->weights = calloc(layer->num_inputs, sizeof(double*));
+    layer->weights = (double **) calloc(layer->num_inputs, sizeof(double*));
     if (!layer->weights) return 1;
     for (int i = 0; i < layer->num_inputs;i++){
-        layer->weights[i] = calloc(layer->num_outputs, sizeof(double));
+        layer->weights[i] = (double *) calloc(layer->num_outputs, sizeof(double));
         if (!layer->weights[i]) return 1;
     }
 

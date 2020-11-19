@@ -15,9 +15,10 @@
 
 // Create the neural network
 ann_t *ann_create(const int num_layers, int *layer_outputs){
-    ann_t *ann = malloc(sizeof(ann_t));
+    ann_t *ann = (ann_t *) malloc(sizeof(ann_t));
     if (!ann) return NULL;
-    layer_t *layers[num_layers];
+    layer_t **layers = (layer_t **) calloc(num_layers, sizeof(layer_t *));
+    if (!layers) return NULL;
     layers[0] = layer_create();
     if (!layers[0]) return NULL;
     if (layer_init(layers[0], layer_outputs[0], NULL)) return NULL;
@@ -28,6 +29,8 @@ ann_t *ann_create(const int num_layers, int *layer_outputs){
     }
     ann->input_layer = layers[0];
     ann->output_layer = layers[num_layers - 1];
+
+    free(layers);
     
     return ann;
 }
