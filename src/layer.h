@@ -5,18 +5,18 @@
 
 typedef struct layer {
 
-    int num_inputs, num_outputs;
+    int num_inputs, num_outputs; // Layer dimensions
 
-    double *outputs;
+    double *outputs; // Calculated output values
 
-    struct layer *prev;
-    struct layer *next;
+    struct layer *prev; // Pointer to next layer
+    struct layer *next; // Pointer to previous layer
 
-    double **weights;
+    double **weights; // Matrix of Weights
 
-    double *biases;
+    double *biases; // Biases for each node
 
-    double *deltas;
+    double *deltas; // Deltas for back propagation
 
 } layer_t;
 
