@@ -1,2 +1,1 @@
-# ANN
-Artificial Neural Network
+# Basic Neural Network
